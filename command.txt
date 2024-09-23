@@ -1,0 +1,7 @@
+■コンパイル用コマンド
+javac -encoding UTF-8 FirstNormalization.java
+javac -encoding UTF-8 InverseNormalization.java
+
+■実行用コマンド
+java FirstNormalization input.tsv
+java InverseNormalization input2.tsv
