@@ -7,6 +7,11 @@ import java.util.*;
 /**
  * タブで列が区切られたTSVデータを読み込み、
  * 第一正規化してTSVデータを出力
+ *
+ * 仕様からの逸脱点:
+ * 本プログラムにはデータのバリデーション処理が含まれていません。
+ * 出力する際、データのソートはしていません。
+ *
  */
 public class FirstNormalization {
 
@@ -28,6 +33,8 @@ public class FirstNormalization {
 			normalize(fis);
 		} catch (FileNotFoundException e) {
 			System.err.println("エラー: 指定されたファイルが見つかりません。");
+		} catch (IOException e) {
+			System.err.println("エラー: ファイルの読み取り中にエラーが発生しました。");
 		}
 	}
 
@@ -37,30 +44,30 @@ public class FirstNormalization {
 	* @param input 第一正規化するデータが含まれる入力ストリーム
 	* @throws IOException 入力ストリームの読み取り中にエラーが発生した場合にスローされる
 	*/
-	public static void normalize(InputStream input) throws IOException {
+	private static void normalize(InputStream input) throws IOException {
 		BufferedReader reader = new BufferedReader(new InputStreamReader(input));
 		String line;
 
 		// 行ごとに第一正規化を行い、出力
 		while ((line = reader.readLine()) != null) {
+			if (line.trim().isEmpty()) continue; // 空行をスキップ
+
 			// タブで列を分割
 			String[] cells = line.split("\t");
 
-			// 第一正規化した行データを格納するためのリスト
-			List<String[]> normalizedRows = new ArrayList<>();
+			List<String[]> normalizedRows = new ArrayList<>(); // 第一正規化後の行データ
 			normalizedRows.add(new String[cells.length]); // 後にループするために列数分の空の配列を追加
 
 			// 第一正規化を行う
-			// セルが複数の値を持つ場合は、分解・新しい行を作成
+			// セルが複数の値を持つ場合は、分解して新しい行を作成
 			for (int i = 0; i < cells.length; i++) {
-				// 各セルを：で分割
-				String[] values = cells[i].split(":");
+				String[] values = cells[i].split(":"); // 各セルを：で分割
 
-				List<String[]> newRows = new ArrayList<>(); // 生成された新しい行のリスト
+				List<String[]> newRows = new ArrayList<>(); // 生成された新しい行データ
 
-				// 既存の行に次のセルの値を追加する
+				// 既存の行に次のセルの値を追加
 				for (String[] row : normalizedRows) {
-					// 既存の行データをコピー.新しい値を追加し、新しい行を生成
+					// 既存の行データをコピー.新しい値を追加・新しい行を生成
 					for (String value : values) {
 						String[] newRow = Arrays.copyOf(row, row.length);
 						newRow[i] = value;
@@ -71,9 +78,9 @@ public class FirstNormalization {
 				normalizedRows = newRows;
 			}
 
-			// 第一正規化したデータを出力.列はタブで区切る.
+			// 第一正規化したデータを出力
 			for (String[] row : normalizedRows) {
-				System.out.println(String.join("\t", row));
+				System.out.println(String.join("\t", row)); // 列はタブで区切る
 			}
 		}
 	}

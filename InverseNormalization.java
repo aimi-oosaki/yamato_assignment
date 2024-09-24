@@ -8,13 +8,18 @@ import java.util.*;
  * キーと値の2列からなるTSVデータを読み込み、
  * 同じキーを持つ値をグループ化したTSVデータを出力
  *
- * @param args 逆正規化を行うTSVファイル名
+ * 仕様からの逸脱点:
+ * 本プログラムにはデータのバリデーション処理が含まれていません。
+ * 出力する際、データのソートはしていません。
+ *
  */
 public class InverseNormalization {
 
 	/**
-	 * コマンドライン引数として指定されたファイルを読み込み、その内容を逆正規化
-	 * @param args 逆正規化を行うTSVファイル名
+	 * コマンドライン引数として指定されたファイルを読み込み、
+	 * その内容を逆第一正規化してTSVデータを出力
+	 *
+	 * @param args 逆第一正規化を行うTSVファイル名
 	 * @throws IOException 入力ストリームの読み取り中にエラーが発生した場合にスローされる
 	 */
 	public static void main(String[] args) throws IOException {
@@ -29,16 +34,18 @@ public class InverseNormalization {
 			inverseNormalize(fis);
 		} catch (FileNotFoundException e) {
 			System.err.println("エラー: 指定されたファイルが見つかりません。");
+		} catch (IOException e) {
+			System.err.println("エラー: ファイルの読み取り中にエラーが発生しました。");
 		}
     }
 
 	/**
- 	* 入力ストリームからデータを読み取り、逆正規化
+ 	* 入力ストリームからデータを読み取り、逆第一正規化
 	*
-	* @param input 逆正規化するデータが含まれる入力ストリーム
+	* @param input 逆第一正規化するデータが含まれる入力ストリーム
 	* @throws IOException 入力ストリームの読み取り中にエラーが発生した場合にスローされる
 	*/
-    public static void inverseNormalize(InputStream input) throws IOException {
+    private static void inverseNormalize(InputStream input) throws IOException {
         BufferedReader reader = new BufferedReader(new InputStreamReader(input));
         String line;
 
@@ -56,7 +63,7 @@ public class InverseNormalization {
             String value = parts[1];
 
             // キーでグループ化する
-            // まず、キーに対応するリストが存在するかどうかを確認する
+            // キーに対応するリストが存在するかどうかを確認する
 			List<String> list = groupMap.get(key);
 
 			// リストが存在しない場合は新しく作成してマップに追加する
@@ -72,8 +79,8 @@ public class InverseNormalization {
         // グループ化した結果を出力
         for (Map.Entry<String, List<String>> entry : groupMap.entrySet()) {
             String key = entry.getKey();
-            String joinedValues = String.join(":", entry.getValue());
-            System.out.println(key + "\t" + joinedValues);
+            String joinedValues = String.join(":", entry.getValue()); // 値が複数ある場合はコロンで連結
+            System.out.println(key + "\t" + joinedValues); // 列はタブで区切る
         }
     }
 }
