@@ -1,7 +1,17 @@
+-----------------------------------
+1. 第一正規化
+-----------------------------------
 ■コンパイル用コマンド
 javac -encoding UTF-8 FirstNormalization.java
-javac -encoding UTF-8 InverseNormalization.java
 
 ■実行用コマンド
 java FirstNormalization input.tsv
+
+-----------------------------------
+2. 第一正規化の逆
+-----------------------------------
+■コンパイル用コマンド
+javac -encoding UTF-8 InverseNormalization.java
+
+■実行用コマンド
 java InverseNormalization input2.tsv
