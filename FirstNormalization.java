@@ -10,7 +10,6 @@ import java.util.*;
  *
  * 仕様からの逸脱点:
  * 本プログラムにはデータのバリデーション処理が含まれていません。
- * 出力する際、データのソートはしていません。
  *
  */
 public class FirstNormalization {
